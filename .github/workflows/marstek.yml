@@ -1,0 +1,23 @@
+name: Marstek Cloud -> Svitlohelper
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '3-58/5 * * * *'  # UTC; avoid minute 00
+permissions:
+  contents: read
+concurrency:
+  group: marstek-collector
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Fetch Marstek and send protected snapshot to Cloudflare
+        env:
+          MARSTEK_EMAIL: ${{ secrets.MARSTEK_EMAIL }}
+          MARSTEK_PWD_MD5: ${{ secrets.MARSTEK_PWD_MD5 }}
+          INGEST_KEY: ${{ secrets.INGEST_KEY }}
+        run: python3 collector.py
