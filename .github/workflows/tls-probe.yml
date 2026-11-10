@@ -1,0 +1,20 @@
+
+name: Test Marstek HTTPS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Marstek Cloud
+        run: |
+          curl -sS -L -o /dev/null \
+            -w "Marstek HTTP: %{http_code}\n" \
+            --max-time 15 \
+            https://eu.hamedata.com/app/Solar/v2_get_device.php
